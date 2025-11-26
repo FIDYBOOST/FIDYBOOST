@@ -1,20 +1,34 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import MobileFrame from "./components/MobileFrame";
-import MobileLayout from "./components/MobileLayout";
+import './components/header/header.css'
+import './components/contenido/contenido.css'
+import './components/footer/footer.css'
+import Header from './components/header/Header'
+import Contenido from './components/contenido/contenido'
+import Footer from './components/footer/Footer'
+
 
 
 function App() {
 
   return (
-    <MobileFrame>
-      <MobileLayout>
-        <h2>Pantalla Home</h2>
-        <p>Contenido de prueba dentro del mockup del móvil.</p>
-      </MobileLayout>
-    </MobileFrame>
+    <div className="container-fluid min-vh-100 d-flex flex-column">
+      <div className="row sticky-top text-center">
+        <div className="col-12 bg-dark p-100 text-light">
+          <Header />
+        </div>
+      </div>
+      <div className="row flex-grow-1 text-center">
+        <div className="col-12 bg-dark m-10 vh-90 text-light">
+          <Contenido />
+        </div>
+      </div>
+      <div className="row text-center">
+        <div className="col-12 bg-dark p-100 text-light">
+          <Footer />
+        </div>
+      </div>
+    </div>
   )
 }
 
