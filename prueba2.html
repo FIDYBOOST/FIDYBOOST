@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FidyBoost - Diego App Fixed V3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --primary-teal: #8FD1CC;
+            --teal-hover: #79b2ae;
+            --bg-body: #1a1a1a;
+            --bg-header: #252525;
+            --bg-card: #3a3a3a;
+            --bg-input: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --border-light: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-main);
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+
+        @media (min-width: 992px) {
+            body { padding-bottom: 20px; }
+        }
+
+        a { text-decoration: none; transition: all 0.2s ease; }
+
+        /* HEADER */
+        .app-header {
+            background-color: var(--bg-header);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+            position: sticky; top: 0; z-index: 1020;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .logo-text { font-weight: 800; letter-spacing: 0.5px; font-size: 1.3rem; }
+        .logo-highlight { color: var(--primary-teal); }
+
+        /* NAV DESKTOP */
+        .desktop-nav { display: none; }
+        .desktop-nav a { color: var(--text-muted); margin: 0 15px; font-weight: 600; position: relative; padding-bottom: 5px; }
+        .desktop-nav a:hover { color: white; }
+        .desktop-nav a.active { color: var(--primary-teal); }
+        .desktop-nav a.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--primary-teal); }
+        @media (min-width: 992px) { .desktop-nav { display: flex; align-items: center; } }
+
+        /* TARJETAS */
+        .content-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%; /* Asegura ancho completo */
+        }
+
+        /* FILTROS */
+        .scroll-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 5px; scrollbar-width: none; }
+        .filter-btn { border: 1px solid var(--border-light); color: white; border-radius: 50px; padding: 6px 16px; font-size: 0.8rem; background: rgba(255,255,255,0.05); white-space: nowrap; }
+
+        /* SEARCH AREA */
+        .search-area { background: var(--bg-input); border-radius: 12px; padding: 25px; text-align: center; border: 1px solid var(--border-light); }
+        .btn-teal { background-color: var(--primary-teal); color: #1a1a1a; font-weight: 700; border: none; width: 100%; padding: 12px; border-radius: 8px; margin-top: 15px; text-transform: uppercase; font-size: 0.9rem; }
+        
+        /* CREAR GRUPO */
+        .create-group-card {
+            background: linear-gradient(135deg, #505050 0%, #3a3a3a 100%);
+            display: flex; align-items: center; justify-content: space-between; padding: 20px;
+            border-radius: 12px; border: 1px solid var(--border-light); cursor: pointer;
+            min-height: 100px; /* Altura mínima para asegurar visibilidad */
+        }
+        .icon-box { font-size: 2rem; background: rgba(255,255,255,0.1); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 15px; }
+
+        /* CALENDARIO */
+        .nav-tabs-scroll { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 20px; border-bottom: 1px solid var(--border-light); margin-bottom: 20px; scrollbar-width: none; }
+        .tab-link { background: none; border: none; color: var(--text-muted); padding: 10px 0; font-weight: 600; position: relative; }
+        .tab-link.active { color: white; }
+        .tab-link.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: white; }
+        
+        .activity-item { padding: 15px 0; border-bottom: 1px solid var(--border-light); }
+        .date-label { font-size: 0.75rem; font-weight: 700; color: var(--primary-teal); text-transform: uppercase; margin-bottom: 4px; }
+        .activity-img { width: 90px; height: 65px; object-fit: cover; border-radius: 8px; margin-left: 10px; background: #555; }
+
+        /* MENU MÓVIL */
+        .bottom-nav { background-color: #202020; border-top: 1px solid #333; height: 70px; }
+        .nav-item-mobile { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #888; font-size: 0.7rem; position: relative; }
+        .nav-item-mobile.active { color: var(--primary-teal); }
+        .nav-item-mobile i { font-size: 1.4rem; margin-bottom: 3px; }
+        .notification-badge { position: absolute; top: 15px; right: 30%; width: 8px; height: 8px; background: #ff4d4d; border-radius: 50%; }
+
+        /* DIVIDER */
+        .mobile-divider { height: 1px; background-color: rgba(255,255,255,0.1); margin: 10px 0; display: block; }
+        @media (min-width: 992px) { .mobile-divider { display: none; } }
+
+    </style>
+</head>
+<body>
+
+    <header class="app-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-activity fs-3 me-2" style="color: var(--primary-teal);"></i> 
+            <span class="logo-text text-white">FIDY<span class="logo-highlight">BOOST</span></span>
+        </div>
+        
+        <nav class="desktop-nav">
+            <a href="#" class="active">Inicio</a>
+            <a href="#">Explorar</a>
+            <a href="#">Notificaciones</a>
+            <a href="#">Mensajes</a>
+        </nav>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="text-end d-none d-md-block">
+                <div class="fw-bold small">Diego</div>
+                <div class="text-muted" style="font-size: 0.7rem;">Nivel 5</div>
+            </div>
+            <img src="https://ui-avatars.com/api/?name=Diego&background=8FD1CC&color=fff" class="rounded-circle" width="40" height="40">
+        </div>
+    </header>
+
+    <div class="container container-xl my-lg-4 px-3">
+        <div class="row g-4">
+            
+            <div class="col-12 col-lg-7 d-flex flex-column gap-4 mb-5 mb-lg-0">
+                
+                <div class="content-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold m-0">Próximas actividades</h5>
+                        <small class="text-muted"><i class="bi bi-sliders"></i> Filtros</small>
+                    </div>
+                    <div class="scroll-container mb-4">
+                        <button class="filter-btn">Personas que asistirán</button>
+                        <button class="filter-btn">Tus actividades</button>
+                        <button class="filter-btn">Sugeridas</button>
+                    </div>
+                    <div class="search-area">
+                        <h5 class="fw-bold">Busca actividades cerca</h5>
+                        <p class="small text-muted mb-3">20 actividades encontradas</p>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-dark border-secondary text-light"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control bg-dark border-secondary text-light" placeholder="Ej: Padel...">
+                        </div>
+                        <button class="btn btn-teal">BUSCAR</button>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="content-card d-flex flex-column justify-content-center text-center text-md-start h-100">
+                            <h5 class="fw-bold">Tus Grupos</h5>
+                            <div class="py-3">
+                                <p class="mb-1 text-muted">No te has unido a ningún grupo</p>
+                                <a href="#" class="small text-info text-decoration-none fw-bold">Descubrir grupos &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="create-group-card h-100">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box">🏀</div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Crear grupo</h6>
+                                    <small class="text-muted">Organiza partidos</small>
+                                </div>
+                            </div>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <div class="col-12 col-lg-5">
+                <div class="content-card h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold">Tu calendario</h5>
+                        <i class="bi bi-calendar3 text-muted"></i>
+                    </div>
+                    
+                    <div class="nav-tabs-scroll" id="calendarTabs">
+                        <button class="tab-link active" onclick="activateTab(this)">Todos</button>
+                        <button class="tab-link" onclick="activateTab(this)">Asistiré</button>
+                        <button class="tab-link" onclick="activateTab(this)">Guardados</button>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="activity-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="date-label">SÁBADO, NOV 28 - 15:00</div>
+                                <div class="fw-bold small">Padel nivel intermedio</div>
+                                <div class="text-muted small"><i class="bi bi-geo-alt-fill"></i> Pistas Juan XXIII</div>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1626248312068-d62d7c0f1c99?q=80&w=200&auto=format&fit=crop" class="activity-img">
+                        </div>
+
+                        <div class="activity-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="date-label">MARTES, OCT 13 - 12:00</div>
+                                <div class="fw-bold small">Yoga al aire libre</div>
+                                <div class="text-muted small"><i class="bi bi-geo-alt-fill"></i> Parque Torres</div>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1544367563-12123d896889?q=80&w=200&auto=format&fit=crop" class="activity-img">
+                        </div>
+                        
+                         <div class="activity-item d-flex justify-content-between align-items-center border-0">
+                            <div>
+                                <div class="date-label">MIÉRCOLES, NOV 26 - 19:30</div>
+                                <div class="fw-bold small">Golf 18 hoyos</div>
+                                <div class="text-muted small"><i class="bi bi-geo-alt-fill"></i> Club de Golf</div>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=200&auto=format&fit=crop" class="activity-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <nav class="navbar fixed-bottom bottom-nav d-lg-none">
+        <div class="container-fluid d-flex justify-content-around">
+            <a href="#" class="nav-item-mobile active" onclick="activateNav(this)"><i class="bi bi-house-door-fill"></i>Inicio</a>
+            <a href="#" class="nav-item-mobile" onclick="activateNav(this)"><i class="bi bi-search"></i>Explorar</a>
+            <a href="#" class="nav-item-mobile" onclick="activateNav(this)">
+                <i class="bi bi-bell"></i>Avisos
+                <span class="notification-badge"></span>
+            </a>
+            <a href="#" class="nav-item-mobile" onclick="activateNav(this)"><i class="bi bi-chat-dots"></i>Chat</a>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function activateTab(el) {
+            document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+        function activateNav(el) {
+            document.querySelectorAll('.nav-item-mobile').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+</html>

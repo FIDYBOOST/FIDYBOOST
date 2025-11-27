@@ -1,0 +1,6 @@
+export const actividadesIniciales = [
+    { id: 1, fecha: "SÁBADO, NOV 28 - 15:00", titulo: "Padel nivel intermedio", lugar: "Pistas Juan XXIII", img: "https://images.unsplash.com/photo-1626248312068-d62d7c0f1c99?q=80&w=200&auto=format&fit=crop", tipo: "asistire", categoria: "padel" },
+    { id: 2, fecha: "MARTES, OCT 13 - 12:00", titulo: "Yoga al aire libre", lugar: "Parque Torres", img: "https://images.unsplash.com/photo-1544367563-12123d896889?q=80&w=200&auto=format&fit=crop", tipo: "pendiente", categoria: "yoga" },
+    { id: 3, fecha: "MIÉRCOLES, NOV 26 - 19:30", titulo: "Golf 18 hoyos", lugar: "Club de Golf", img: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=200&auto=format&fit=crop", tipo: "pendiente", categoria: "golf" },
+    { id: 4, fecha: "JUEVES, NOV 27 - 18:00", titulo: "Entreno Pecho y Espalda", lugar: "Fitness Park Juan XXIII", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=200&auto=format&fit=crop", tipo: "pendiente", categoria: "gimnasio" }
+];
