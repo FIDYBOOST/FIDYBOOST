@@ -1,120 +1,72 @@
-import React, { useState } from 'react';
-import Header from './components/header/Header'
-import GroupsList from './components/ListaGrupos/GroupsList'
-import SearchSection from './components/Buscador/SearchSection'
-import ActivityItem from './components/Actividades/ActivityItem'
-import BottomNav from './components/Buscador/BottomNav'
-import { actividadesIniciales } from './data/mockData';
-import './index.css';
+import React, { useState, useEffect } from 'react';
+import { AppProvider, useApp } from './context/AppContext';
 
-function App() {
-  // --- ESTADOS ---
-  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' o 'groups'
-  const [activeTab, setActiveTab] = useState('todos'); // todos, asistire, guardados
-  const [searchTerm, setSearchTerm] = useState('');
-  const [likes, setLikes] = useState(new Set()); 
+// Componentes
+import Header from './components/Header';
+import ModalActivity from './components/ModalActivity';
+import BottomNav from './components/BottomNav'; // Tienes que crear este archivo
+import CreateGroupForm from './components/CreateGroupForm'; // Tienes que crear este archivo
 
-  // --- LÓGICA ---
-  
-  // Función Like
-  const toggleLike = (id) => {
-    const newLikes = new Set(likes);
-    if (newLikes.has(id)) {
-      newLikes.delete(id);
-    } else {
-      newLikes.add(id);
-    }
-    setLikes(newLikes);
-  };
+// Pages
+import Dashboard from './pages/Dashboard';
+import ExploreView from './pages/ExploreView'; // Tienes que crear este archivo
+import MessagesView from './pages/MessagesView'; // Tienes que crear este archivo
+import NotificationsView from './pages/NotificationsView'; // Tienes que crear este archivo
+import LoginScreen from './pages/LoginScreen'; // Tienes que crear este archivo
 
-  // Filtrado de actividades
-  const actividadesFiltradas = actividadesIniciales.filter(act => {
-    // 1. Filtro Tab
-    let cumpleTab = false;
-    if (activeTab === 'todos') cumpleTab = true;
-    if (activeTab === 'asistire' && act.tipo === 'asistire') cumpleTab = true;
-    if (activeTab === 'guardados' && likes.has(act.id)) cumpleTab = true;
+// Estilos
+import './styles/App.css';
 
-    // 2. Filtro Search
-    let cumpleSearch = true;
-    if (searchTerm) {
-      const text = searchTerm.toLowerCase();
-      cumpleSearch = act.titulo.toLowerCase().includes(text) || act.categoria.includes(text);
-    }
+const MainLayout = () => {
+  const { user, createGroup } = useApp();
+  const [view, setView] = useState('dashboard');
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
-    return cumpleTab && cumpleSearch;
-  });
+  if (!user) return <LoginScreen />;
 
   return (
-    <div className="App">
-      <Header />
-
-      {/* RENDERIZADO CONDICIONAL: ¿Qué pantalla mostramos? */}
-      {currentView === 'groups' ? (
-        
-        /* 1. VISTA DE GRUPOS */
-        /* Al darle a volver, cambiamos el estado a 'dashboard' */
-        <GroupsList onBack={() => setCurrentView('dashboard')} />
-
-      ) : (
-
-        /* 2. VISTA DASHBOARD (PRINCIPAL) */
-        <div className="container container-xl my-lg-4 px-3">
-          <div className="row g-4">
-            
-            <div className="col-12 col-lg-7">
-              {/* Pasamos la función onNavigate para cambiar a 'groups' */}
-              <SearchSection 
-                onSearch={(text) => setSearchTerm(text)} 
-                onNavigate={() => setCurrentView('groups')}
-              />
-            </div>
-
-            <div className="col-12 col-lg-5">
-              <div className="content-card h-100">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <h5 class="fw-bold">Tu calendario</h5>
-                  <i className="bi bi-calendar3 text-muted"></i>
-                </div>
-                
-                <div className="nav-tabs-scroll">
-                  {['todos', 'asistire', 'guardados'].map(tab => (
-                     <button 
-                       key={tab}
-                       className={`tab-link ${activeTab === tab ? 'active' : ''}`} 
-                       onClick={() => setActiveTab(tab)}
-                       style={{textTransform: 'capitalize'}}
-                     >
-                       {tab === 'asistire' ? 'Asistiré' : tab}
-                     </button>
-                  ))}
-                </div>
-
-                <div className="mt-3">
-                  {actividadesFiltradas.length > 0 ? (
-                    actividadesFiltradas.map(act => (
-                      <ActivityItem 
-                        key={act.id} 
-                        data={act} 
-                        isLiked={likes.has(act.id)} 
-                        onToggleLike={toggleLike} 
-                      />
-                    ))
-                  ) : (
-                    <p className="text-center text-muted py-4">No hay actividades aquí.</p>
-                  )}
-                </div>
-
-              </div>
-            </div>
-            
-          </div>
-        </div>
+    <>
+      <Header setView={setView} currentView={view} />
+      
+      <main className="app-container py-4 pb-5 mb-5">
+        {view === 'dashboard' && <Dashboard onNavigate={setView} onSelect={setSelectedActivity} />}
+        {view === 'explore' && <ExploreView onSelect={setSelectedActivity} />}
+        {view === 'messages' && <MessagesView />}
+        {view === 'notifications' && <NotificationsView />}
+        {view === 'createGroup' && (
+            <CreateGroupForm 
+                onCancel={() => setView('dashboard')} 
+                onSubmit={(d) => {createGroup(d); setView('dashboard');}} 
+            />
+        )}
+      </main>
+      
+      {selectedActivity && (
+        <ModalActivity activity={selectedActivity} onClose={() => setSelectedActivity(null)} />
       )}
-
-      <BottomNav />
-    </div>
+      
+      <BottomNav setView={setView} currentView={view} />
+    </>
   );
-}
+};
+
+const App = () => {
+  // Carga de iconos Bootstrap
+  useEffect(() => {
+    if(!document.getElementById('bs-icons')) {
+      const link = document.createElement("link"); link.id = 'bs-icons';
+      link.href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"; link.rel = "stylesheet";
+      document.head.appendChild(link);
+      const linkB = document.createElement("link"); linkB.href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"; linkB.rel = "stylesheet";
+      document.head.appendChild(linkB);
+    }
+  }, []);
+
+  return (
+    <AppProvider>
+      <MainLayout />
+    </AppProvider>
+  );
+};
 
 export default App;
