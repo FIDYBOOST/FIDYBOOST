@@ -17,7 +17,7 @@ export const INITIAL_DATA = {
     username: "fidyboost",
     level: "Nivel 5",
     xp: 65,
-    avatar: "https://ui-avatars.com/api/?name=Gerardo&background=8FD1CC&color=fff&bold=true"
+    avatar: "https://ui-avatars.com/api/?name=Admin&background=8FD1CC&color=fff&bold=true"
   },
   activities: [
     { id: 1, date: "SÁBADO, 10:00", title: "Torneo de Pádel", location: "Club Deportivo Central", description: "Torneo amateur. 3 partidos garantizados.", type: "joined", category: "Padel", img: "https://images.unsplash.com/photo-1626248312068-d62d7c0f1c99?auto=format&fit=crop&w=300&q=80" },
@@ -38,6 +38,6 @@ export const INITIAL_DATA = {
     { id: 902, nombre: "Padel Weekend", actividad: "Padel", horario: "Sábados 10:00" }
   ],
   chat: [
-    { id: 1, from: 'bot', text: '¡Hola Gerardo! Soy FidyBot 🤖. ¿Listo para entrenar hoy?' }
+    { id: 1, from: 'bot', text: '¡Hola Admin! Soy FidyBot 🤖. ¿Listo para entrenar hoy?' }
   ]
 };
