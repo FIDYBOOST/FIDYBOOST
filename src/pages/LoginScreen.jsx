@@ -21,7 +21,7 @@ const LoginScreen = () => {
         {/* LOGO IMAGEN */}
         <div className="mb-4">
             <img 
-                src="../images/logo.png" 
+                src="./images/logo.png" 
                 alt="FidyBoost Logo" 
                 style={{ maxHeight: '60px', width: 'auto' }} 
             />

@@ -26,7 +26,7 @@ const Header = ({ setView, currentView }) => {
       {/* LOGO IMAGEN EN HEADER */}
       <div className="d-flex align-items-center cursor-pointer" onClick={() => setView('dashboard')}>
         <img 
-            src="../images/logo.png" 
+            src="./images/logo.png" 
             alt="FidyBoost" 
             style={{ height: '40px', width: 'auto', objectFit: 'contain' }} 
         />
